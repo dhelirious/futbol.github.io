@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Stream</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .iframe-container {
+            position: relative;
+            width: 80%;
+            height: 0;
+            padding-bottom: 45%; /* Aspect ratio */
+            overflow: hidden;
+        }
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="iframe-container" id="iframe-container">
+        <iframe id="autoplay-iframe" src="https://betzta.com/canales.php?stream=movistar" allow="autoplay" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var iframe = document.getElementById('autoplay-iframe');
+            var iframeContainer = document.getElementById('iframe-container');
+            
+            iframe.onload = function() {
+                setTimeout(function() {
+                    // Click in the middle of the iframe
+                    var rect = iframe.getBoundingClientRect();
+                    var clickEvent = new MouseEvent('click', {
+                        view: window,
+                        bubbles: true,
+                        cancelable: true,
+                        clientX: rect.left + rect.width / 2,
+                        clientY: rect.top + rect.height / 2
+                    });
+                    
+                    var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                    iframeDocument.body.dispatchEvent(clickEvent);
+
+                    // Request full-screen
+                    if (iframeContainer.requestFullscreen) {
+                        iframeContainer.requestFullscreen();
+                    } else if (iframeContainer.mozRequestFullScreen) { // Firefox
+                        iframeContainer.mozRequestFullScreen();
+                    } else if (iframeContainer.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                        iframeContainer.webkitRequestFullscreen();
+                    } else if (iframeContainer.msRequestFullscreen) { // IE/Edge
+                        iframeContainer.msRequestFullscreen();
+                    }
+                }, 2000); // Wait for 2 seconds before clicking
+            };
+        });
+    </script>
+</body>
+</html>
